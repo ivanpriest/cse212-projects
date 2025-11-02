@@ -11,6 +11,25 @@ public static class ArraySelector
 
     private static int[] ListSelector(int[] list1, int[] list2, int[] select)
     {
-        return [];
+        int[] jointList = new int[select.Count()];
+        int arrayIndex = 0;
+        int list1Ind = 0;
+        int list2Ind = 0;
+        for(int i =0; i <= select.Count()-1;i++)
+        {
+            if (select[i] == 1)
+            {
+                jointList[arrayIndex] = list1[list1Ind];
+                list1Ind += 1;
+            }
+            else if (select[i] == 2)
+            {
+                jointList[arrayIndex] = list2[list2Ind];
+                list2Ind += 1;
+            }
+            arrayIndex += 1;
+
+        }
+        return jointList;
     }
 }
