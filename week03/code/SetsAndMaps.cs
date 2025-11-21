@@ -1,4 +1,8 @@
 using System.Text.Json;
+using System;
+using System.Net.Http;
+using System.Linq;
+using System.Threading.Tasks;
 
 public static class SetsAndMaps
 {
@@ -22,7 +26,27 @@ public static class SetsAndMaps
     public static string[] FindPairs(string[] words)
     {
         // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        var seen = new HashSet<string>(words);
+        var pairs = new HashSet<string>();
+        foreach(var word in words)
+        {
+            var reversed = new string(new char[] { word[1], word[0] });
+            if (seen.Contains(reversed) && word != reversed)
+            {
+                string pair;
+                if(reversed.CompareTo(word) >0)
+                {
+                    pair =$"{word} & {reversed}";
+                }
+                else
+                {
+                    pair =$"{reversed} & {word}";
+                }
+
+                pairs.Add(pair);
+            }
+        }
+        return pairs.ToArray();
     }
 
     /// <summary>
@@ -43,6 +67,18 @@ public static class SetsAndMaps
         {
             var fields = line.Split(",");
             // TODO Problem 2 - ADD YOUR CODE HERE
+            string nameOfDegree= fields[3];
+            if (!degrees.ContainsKey(nameOfDegree))
+            {
+                degrees[nameOfDegree]=1;
+                
+            }
+            else if(degrees.ContainsKey(nameOfDegree))
+            {
+                degrees[nameOfDegree] +=1;
+            }
+            else{}
+
         }
 
         return degrees;
@@ -67,8 +103,51 @@ public static class SetsAndMaps
     public static bool IsAnagram(string word1, string word2)
     {
         // TODO Problem 3 - ADD YOUR CODE HERE
+       
+         // 1. Normalize the strings (remove spaces and convert to lowercase)
+        string w1 = word1.Replace(" ", "").ToLower();
+        string w2 = word2.Replace(" ", "").ToLower();
+
+        // If lengths don't match after stripping spaces, they can't be anagrams
+        if (w1.Length != w2.Length)
         return false;
+
+        // 2. Count characters of first word using a dictionary
+        Dictionary<char, int> charCount = new Dictionary<char, int>();
+
+        foreach (char c in w1)
+        {
+            if (charCount.ContainsKey(c))
+            charCount[c]++;
+            else
+            charCount[c] = 1;
+        }
+
+        // 3. Subtract character counts using second word
+        foreach (char c in w2)
+        {
+            if (!charCount.ContainsKey(c))
+                return false;  // letter not found = not an anagram
+
+            charCount[c]--;
+
+            if (charCount[c] < 0)
+                return false;  // too many of a letter
+        }
+
+        // 4. Verify all counts are zero
+        foreach (var count in charCount.Values)
+        {
+            if (count != 0)
+                return false;
+        }
+
+        return true;
     }
+
+
+
+    
 
     /// <summary>
     /// This function will read JSON (Javascript Object Notation) data from the 
@@ -84,6 +163,24 @@ public static class SetsAndMaps
     /// https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php
     /// 
     /// </summary>
+   
+    public class FeatureCollection
+    {
+        public Feature[] Features { get; set; }
+    }
+
+    public class Feature
+    {
+        public Properties Properties { get; set; }
+    }
+
+    public class Properties
+    {
+        public double? Mag { get; set; }  // magnitude can sometimes be null
+        public string Place { get; set; }
+    }
+
+   
     public static string[] EarthquakeDailySummary()
     {
         const string uri = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
