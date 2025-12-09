@@ -77,11 +77,11 @@ public class Node
         int rightheight = 0;
         if (Left is not null)
         {
-            Left.GetHeight();
+            leftheight=Left.GetHeight();
         }
         if (Right is not null)
         {
-            Right.GetHeight();
+            rightheight=Right.GetHeight();
         }
         return 1+Math.Max(leftheight,rightheight); 
     }
