@@ -1,3 +1,5 @@
+using Microsoft.VisualBasic;
+
 public class Node
 {
     public int Data { get; set; }
@@ -12,6 +14,9 @@ public class Node
     public void Insert(int value)
     {
         // TODO Start Problem 1
+        if (value == Data){
+        return;
+        }
 
         if (value < Data)
         {
@@ -34,12 +39,50 @@ public class Node
     public bool Contains(int value)
     {
         // TODO Start Problem 2
-        return false;
+        if (Data == value)
+        {
+            return true;
+        }
+        else if(Data > value)
+        {
+            if(Left is null)
+            {
+                return false;
+            }
+            else
+            {
+                return Left.Contains(value);
+            }
+            
+        }
+        else
+        {
+            if(Right is null)
+            {
+                return false;
+            }
+            else
+            {
+                return Right.Contains(value);
+            }
+            
+        }
+        
     }
 
     public int GetHeight()
     {
         // TODO Start Problem 4
-        return 0; // Replace this line with the correct return statement(s)
+        int leftheight = 0;
+        int rightheight = 0;
+        if (Left is not null)
+        {
+            Left.GetHeight();
+        }
+        if (Right is not null)
+        {
+            Right.GetHeight();
+        }
+        return 1+Math.Max(leftheight,rightheight); 
     }
 }
